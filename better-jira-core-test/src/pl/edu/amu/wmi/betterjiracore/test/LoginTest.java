@@ -1,14 +1,15 @@
 package pl.edu.amu.wmi.betterjiracore.test;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
-import pl.edu.amu.wmi.betterjira.api.methods.BasicAuthentication;
+import pl.edu.amu.wmi.betterjira.api.function.BasicAuthentication;
+import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
+import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class LoginTest extends ActivityInstrumentationTestCase2<TestActivity> {
@@ -17,12 +18,13 @@ public class LoginTest extends ActivityInstrumentationTestCase2<TestActivity> {
 	super(TestActivity.class.getPackage().toString(), TestActivity.class);
     }
 
-    public void simpleTest() throws URISyntaxException,
-	    ClientProtocolException, IOException {
-	BasicAuthentication basicAuthentication = new BasicAuthentication(
-		new URI("https://jira.wmi.amu.edu.pl/rest/auth/1/session"));
+    public void testSimple() throws URISyntaxException,
+	    ClientProtocolException, IOException, LoginException, BadResponse {
 
-	HttpResponse execute = ServerConnector.execute(basicAuthentication);
+	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
+
+	BasicAuthentication basic = new BasicAuthentication();
+	basic.login("login", "password");
+
     }
-
 }
