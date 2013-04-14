@@ -3,6 +3,9 @@ package pl.edu.amu.wmi.betterjira.api.function;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -11,6 +14,7 @@ import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.PostMethod;
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
+import pl.edu.amu.wmi.betterjira.api.function.data.LoginInfo;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.EmptyResponse;
@@ -84,11 +88,35 @@ public class BasicAuthentication extends Function implements FunctionInterface {
     }
      */
     private Session parseLogin(JSONObject loginJSON) throws JSONException {
-	// TODO get login info
 	JSONObject jsonObjectSession = loginJSON.getJSONObject("session");
 
 	Session session = new Session(jsonObjectSession.getString("name"),
 		jsonObjectSession.getString("value"));
+
+	// Login info parsing
+	JSONObject jsonObjectLoginInfo = loginJSON.getJSONObject("loginInfo");
+
+	LoginInfo loginInfo = null;
+	try {
+	    loginInfo = new LoginInfo(jsonObjectLoginInfo.getInt("loginCount"),
+		    parseJiraDate(jsonObjectLoginInfo
+			    .getString("previousLoginTime")));
+
+	    loginInfo.setFailedLoginCount(jsonObjectLoginInfo.optInt(
+		    "failedLoginCount", 0));
+
+	    String failedLoginDate = jsonObjectLoginInfo.optString(
+		    "lastFailedLoginTime", null);
+	    if (failedLoginDate != null) {
+		loginInfo
+			.setLastFailedLoginTime(parseJiraDate(failedLoginDate));
+	    }
+	} catch (ParseException e) {
+	    e.printStackTrace();
+	}
+
+	session.setLoginInfo(loginInfo);
+
 	return session;
     }
 
