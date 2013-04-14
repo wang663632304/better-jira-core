@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+//TODO User GSON if need more feature :)
 public class DataParser {
     public static void parse(Object object, JSONObject jsonObject) {
 
