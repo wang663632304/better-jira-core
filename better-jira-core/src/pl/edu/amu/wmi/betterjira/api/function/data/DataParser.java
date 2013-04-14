@@ -1,5 +1,6 @@
 package pl.edu.amu.wmi.betterjira.api.function.data;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.text.ParseException;
@@ -18,10 +19,25 @@ public class DataParser {
     public static void parse(Object object, JSONObject jsonObject) {
 
 	Field[] fields = object.getClass().getDeclaredFields();
-
+	JSONObject jsonFields = null;
 	for (int i = 0; i < fields.length; ++i) {
 	    try {
-		parseField(fields[i], jsonObject, object);
+		Annotation[] annotations = fields[i].getAnnotations();
+		for (int z = 0; annotations != null && z < annotations.length; ++z) {
+		    System.out.println("Mam" + annotations[z]);
+		}
+
+		if (fields[i].getAnnotation(ParseFields.class) != null) {
+
+		    if (jsonFields == null) {
+			jsonFields = jsonObject.getJSONObject("fields");
+		    }
+		    System.out.println("HERE");
+		    parseField(fields[i], jsonFields, object);
+		} else {
+		    parseField(fields[i], jsonObject, object);
+		}
+
 	    } catch (IllegalArgumentException e) {
 		e.printStackTrace();
 	    } catch (JSONException e) {
@@ -62,8 +78,10 @@ public class DataParser {
     private static void parseField(Field field, JSONObject jsonObject,
 	    Object object) throws JSONException, IllegalArgumentException,
 	    IllegalAccessException, InstantiationException, ParseException {
+
 	// If we don't have such field in JSON we skip it
 	if (!jsonObject.has(field.getName())) {
+
 	    Log.w("PARSER", "Skipping field: " + field.getName()
 		    + "\nin class: " + object.getClass().getSimpleName());
 	    return;
@@ -103,11 +121,9 @@ public class DataParser {
 	    field.set(object, parseJiraDate(date));
 
 	} else {
-	    Log.e("PARSER",
-		    "I dont know how to parse this field: " + field.getName()
-			    + "\nin class: "
-			    + object.getClass().getSimpleName() + "\ntype: "
-			    + fieldType);
+	    Class<?> type = field.getType();
+	    Object subObject = type.newInstance();
+	    parse(subObject, jsonObject.getJSONObject(field.getName()));
 	}
 	field.setAccessible(accessible);
     }

@@ -1,11 +1,7 @@
 package pl.edu.amu.wmi.betterjira.api.function.data;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class IssueList {
@@ -15,13 +11,13 @@ public class IssueList {
     private int startAt;
     private ArrayList<Issue> issues = new ArrayList<Issue>();
 
-    private JSONObject m_jsonObjectRequest;
+    private JSONObject jsonObjectRequest;
 
     public void setRequest(JSONObject jsonObjectRequest) {
-	if (m_jsonObjectRequest != null) {
+	if (jsonObjectRequest != null) {
 	    throw new IllegalArgumentException("You can set it only once");
 	}
-	this.m_jsonObjectRequest = jsonObjectRequest;
+	this.jsonObjectRequest = jsonObjectRequest;
     }
 
     public int getTotal() {
