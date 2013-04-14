@@ -18,6 +18,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.HttpParams;
 
+import pl.edu.amu.wmi.betterjira.api.function.data.Session;
+
 /**
  * <b>Structure of the REST URIs</b><br>
  * 
@@ -54,7 +56,7 @@ public class ServerConnector {
     public static int HTTP_PORT = 80;
     public static int HTTPS_PORT = 443;
 
-    public static HttpResponse execute(ServerMethod method)
+    public static HttpResponse execute(ServerMethod method, Session session)
 	    throws ClientProtocolException, IOException {
 
 	HttpClient httpClient = getNewHttpClient(method.getHttpParams());
@@ -66,6 +68,15 @@ public class ServerConnector {
 	    method.setURL(new URL(stringBuilder.toString()));
 	} catch (URISyntaxException e) {
 	    e.printStackTrace();
+	}
+	// Adding session key
+	if (session != null) {
+	    StringBuilder stringBuilderCookie = new StringBuilder(
+		    session.getName());
+	    stringBuilderCookie.append("=");
+	    stringBuilderCookie.append(session.getValue());
+	    method.getRequest().addHeader("Cookie",
+		    stringBuilderCookie.toString());
 	}
 	return httpClient.execute(method.getRequest());
     }

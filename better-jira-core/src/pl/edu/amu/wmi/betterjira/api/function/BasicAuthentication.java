@@ -14,17 +14,19 @@ import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.PostMethod;
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
+import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.LoginInfo;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.EmptyResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
 import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
+import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 
 public class BasicAuthentication extends Function implements FunctionInterface {
 
-    public BasicAuthentication() throws URISyntaxException {
-
+    public BasicAuthentication() {
+	super(null);
     }
 
     public Session login(String login, String password) throws LoginException,
@@ -38,21 +40,8 @@ public class BasicAuthentication extends Function implements FunctionInterface {
 
 	    postMethod.setEntity(jsonObject);
 
-	    HttpResponse httpResponse = ServerConnector.execute(postMethod);
-	    int statusCode = getStatusCode(httpResponse);
-
-	    switch (statusCode) {
-	    case 200:
-		JSONObject loginJSON = parseResponse(httpResponse);
-		return parseLogin(loginJSON);
-	    case 401:
-		throw new LoginException("Invalid user or password");
-	    case 403:
-		throw new LoginException("Can't login please try again");
-	    default:
-		throw new BadResponse("Server returns unknown status: "
-			+ statusCode);
-	    }
+	    JSONObject response = response(postMethod);
+	    return parseLogin(response);
 	} catch (UnsupportedEncodingException e1) {
 	    e1.printStackTrace();
 	} catch (JSONException e) {
@@ -67,6 +56,17 @@ public class BasicAuthentication extends Function implements FunctionInterface {
 	    e.printStackTrace();
 	} catch (NoStatusLine e) {
 	    e.printStackTrace();
+	} catch (StatusCode e) {
+	    e.printStackTrace();
+	    switch (e.getStatusCode()) {
+	    case 401:
+		throw new LoginException("Invalid user or password");
+	    case 403:
+		throw new LoginException("Can't login please try again");
+	    default:
+		throw new BadResponse("Server returns unknown status: "
+			+ e.getStatusCode());
+	    }
 	}
 	return null;
     }
@@ -88,32 +88,14 @@ public class BasicAuthentication extends Function implements FunctionInterface {
     }
      */
     private Session parseLogin(JSONObject loginJSON) throws JSONException {
-	JSONObject jsonObjectSession = loginJSON.getJSONObject("session");
 
-	Session session = new Session(jsonObjectSession.getString("name"),
-		jsonObjectSession.getString("value"));
+	Session session = new Session();
+	DataParser.parse(session, loginJSON.getJSONObject("session"));
 
 	// Login info parsing
-	JSONObject jsonObjectLoginInfo = loginJSON.getJSONObject("loginInfo");
 
-	LoginInfo loginInfo = null;
-	try {
-	    loginInfo = new LoginInfo(jsonObjectLoginInfo.getInt("loginCount"),
-		    parseJiraDate(jsonObjectLoginInfo
-			    .getString("previousLoginTime")));
-
-	    loginInfo.setFailedLoginCount(jsonObjectLoginInfo.optInt(
-		    "failedLoginCount", 0));
-
-	    String failedLoginDate = jsonObjectLoginInfo.optString(
-		    "lastFailedLoginTime", null);
-	    if (failedLoginDate != null) {
-		loginInfo
-			.setLastFailedLoginTime(parseJiraDate(failedLoginDate));
-	    }
-	} catch (ParseException e) {
-	    e.printStackTrace();
-	}
+	LoginInfo loginInfo = new LoginInfo();
+	DataParser.parse(loginInfo, loginJSON.getJSONObject("loginInfo"));
 
 	session.setLoginInfo(loginInfo);
 

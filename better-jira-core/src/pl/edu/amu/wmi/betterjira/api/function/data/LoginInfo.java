@@ -1,6 +1,5 @@
 package pl.edu.amu.wmi.betterjira.api.function.data;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LoginInfo {
@@ -8,11 +7,6 @@ public class LoginInfo {
     private int failedLoginCount;
     private Date previousLoginTime;
     private Date lastFailedLoginTime;
-
-    public LoginInfo(int loginCount, Date date) {
-	this.loginCount = loginCount;
-	this.previousLoginTime = date;
-    }
 
     public final int getLoginCount() {
 	return loginCount;

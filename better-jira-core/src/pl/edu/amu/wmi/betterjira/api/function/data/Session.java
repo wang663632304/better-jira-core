@@ -5,11 +5,6 @@ public class Session {
     private String value;
     private LoginInfo loginInfo;
 
-    public Session(String name, String value) {
-	this.name = name;
-	this.value = value;
-    }
-
     public final String getName() {
 	return name;
     }
