@@ -120,6 +120,10 @@ public class DataParser {
 	    String date = jsonObject.getString(field.getName());
 	    field.set(object, parseJiraDate(date));
 
+	} else if (fieldType
+		.equals("class pl.edu.amu.wmi.betterjira.api.function.data.JQL")) {
+	    field.set(object, new JQL(jsonObject.getString(field.getName())));
+
 	} else {
 	    Class<?> type = field.getType();
 	    Object subObject = type.newInstance();

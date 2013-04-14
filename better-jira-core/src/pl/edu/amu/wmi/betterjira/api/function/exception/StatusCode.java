@@ -21,7 +21,7 @@ public class StatusCode extends Exception {
     public String getError(int index) {
 
 	if (m_errors.size() <= index) {
-	    return "NO_ERRORS";
+	    return "SERVER_ERRORS_EMPTY";
 	} else {
 	    return m_errors.get(index);
 	}
