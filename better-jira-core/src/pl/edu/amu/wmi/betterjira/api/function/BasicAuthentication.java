@@ -40,7 +40,7 @@ public class BasicAuthentication extends Function implements FunctionInterface {
 
 	    postMethod.setEntity(jsonObject);
 
-	    JSONObject response = response(postMethod);
+	    JSONObject response = (JSONObject) response(postMethod);
 	    return parseLogin(response);
 	} catch (UnsupportedEncodingException e1) {
 	    e1.printStackTrace();

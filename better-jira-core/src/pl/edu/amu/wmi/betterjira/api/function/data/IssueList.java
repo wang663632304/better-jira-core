@@ -20,6 +20,10 @@ public class IssueList {
 	this.jsonObjectRequest = jsonObjectRequest;
     }
 
+    public JSONObject getRequest() {
+	return jsonObjectRequest;
+    }
+
     public int getTotal() {
 	return total;
     }
@@ -47,5 +51,4 @@ public class IssueList {
     public Issue getIssue(int index) {
 	return issues.get(index);
     }
-
 }

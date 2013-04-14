@@ -16,6 +16,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.ServerMethod;
@@ -44,7 +45,15 @@ public abstract class Function {
 	return statusLine.getStatusCode();
     }
 
-    protected static JSONObject parseResponse(HttpResponse httpResponse)
+    /**
+     * @param httpResponse
+     * @return can be JSONObject or JSONArray what you need :D
+     * @throws EmptyResponse
+     * @throws IllegalStateException
+     * @throws IOException
+     * @throws JSONException
+     */
+    protected static Object parseResponse(HttpResponse httpResponse)
 	    throws EmptyResponse, IllegalStateException, IOException,
 	    JSONException {
 
@@ -63,7 +72,11 @@ public abstract class Function {
 
 	Log.d(TAG, "Server response:\n" + total.toString());
 
-	return new JSONObject(total.toString());
+	if (total.charAt(0) == '[') {
+	    return new JSONArray(total.toString());
+	} else {
+	    return new JSONTokener(total.toString());
+	}
     }
 
     protected static ArrayList<String> getErrorMessage(JSONObject jsonObject)
@@ -78,7 +91,19 @@ public abstract class Function {
 	return errors;
     }
 
-    protected JSONObject response(ServerMethod serverMethod) throws StatusCode,
+    /**
+     * 
+     * @param serverMethod
+     * @return can be JSONObject or JSONArray what you need :D
+     * @throws StatusCode
+     * @throws ClientProtocolException
+     * @throws IOException
+     * @throws NoStatusLine
+     * @throws IllegalStateException
+     * @throws EmptyResponse
+     * @throws JSONException
+     */
+    protected Object response(ServerMethod serverMethod) throws StatusCode,
 	    ClientProtocolException, IOException, NoStatusLine,
 	    IllegalStateException, EmptyResponse, JSONException {
 	HttpResponse httpResponse = ServerConnector.execute(serverMethod,
@@ -86,10 +111,11 @@ public abstract class Function {
 
 	int statusCode = getStatusCode(httpResponse);
 
-	JSONObject parseResponse = parseResponse(httpResponse);
+	Object parseResponse = parseResponse(httpResponse);
 
 	if (statusCode != 200) {
-	    throw new StatusCode(statusCode, getErrorMessage(parseResponse));
+	    throw new StatusCode(statusCode,
+		    getErrorMessage((JSONObject) parseResponse));
 	}
 
 	return parseResponse;

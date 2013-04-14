@@ -19,6 +19,11 @@ public class StatusCode extends Exception {
     }
 
     public String getError(int index) {
-	return m_errors.get(index);
+
+	if (m_errors.size() <= index) {
+	    return "NO_ERRORS";
+	} else {
+	    return m_errors.get(index);
+	}
     }
 }

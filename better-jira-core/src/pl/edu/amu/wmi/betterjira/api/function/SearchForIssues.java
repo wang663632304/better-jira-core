@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.PostMethod;
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
+import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.IssueList;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
@@ -96,8 +97,13 @@ public class SearchForIssues extends Function implements FunctionInterface {
 	    }
 
 	    postMethod.setEntity(jsonObjectRequest);
-	    JSONObject response = response(postMethod);
-	    return parseIssueList(response, jsonObjectRequest);
+	    JSONObject response = (JSONObject) response(postMethod);
+
+	    IssueList issueList = new IssueList();
+	    issueList.setRequest(jsonObjectRequest);
+	    DataParser.parse(issueList, response);
+
+	    return issueList;
 
 	} catch (UnsupportedEncodingException e1) {
 	    e1.printStackTrace();
@@ -126,23 +132,21 @@ public class SearchForIssues extends Function implements FunctionInterface {
 	return null;
     }
 
-    private IssueList parseIssueList(JSONObject jsonObjectResponse,
-	    JSONObject jsonObjectRequest) throws JSONException {
+    /**
+     * Appends issue list with new issues
+     * 
+     * @param issueList
+     * @return the same object but modified
+     */
+    public IssueList getNextResults(IssueList issueList) {
 
-	IssueList issueList = new IssueList();
-	//issueList.setRequest(jsonObjectRequest);
-	issueList.setTotal(jsonObjectResponse.getInt("total"));
-	issueList.setMaxResults(jsonObjectResponse.getInt("maxResults"));
-	issueList.setStartAt(jsonObjectResponse.getInt("startAt"));
+	JSONObject request = issueList.getRequest();
+	if (request == null) {
+	    throw new IllegalArgumentException(
+		    "You should first get issue list from search method");
+	}
 
-	return null;
-    }
-
-    public Object parseObject(Class<?> clazz, JSONObject jsonObject) {
-
-	Method[] declaredMethods = clazz.getDeclaredMethods();
-	
-
-	return jsonObject;
+	// TODO implement for lazyloading
+	throw new UnsupportedOperationException("TODO implement");
     }
 }
