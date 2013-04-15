@@ -9,6 +9,7 @@ import org.apache.http.client.ClientProtocolException;
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.function.BasicAuthentication;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
+import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
 import android.test.ActivityInstrumentationTestCase2;

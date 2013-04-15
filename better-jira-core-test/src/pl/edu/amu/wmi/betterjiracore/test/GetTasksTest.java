@@ -11,6 +11,7 @@ import pl.edu.amu.wmi.betterjira.api.function.BasicAuthentication;
 import pl.edu.amu.wmi.betterjira.api.function.SearchForIssues;
 import pl.edu.amu.wmi.betterjira.api.function.data.IssueList;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
+import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.InvalidJQLCommand;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
@@ -45,6 +46,6 @@ public class GetTasksTest extends
 
 	System.out
 		.println("=====================================================");
-	issues.parseObject(IssueList.class, null);
+	//issues.parseObject(IssueList.class, null);
     }
 }
