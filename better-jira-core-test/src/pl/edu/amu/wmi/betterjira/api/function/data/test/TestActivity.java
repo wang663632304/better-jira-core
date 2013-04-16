@@ -1,4 +1,4 @@
-package pl.edu.amu.wmi.betterjiracore.test;
+package pl.edu.amu.wmi.betterjira.api.function.data.test;
 
 import android.app.Activity;
 
