@@ -9,12 +9,8 @@ public class CommentsList {
     private int total;
     private int startAt;
 
-    public final ArrayList<Comment> getComments() {
-	return comments;
-    }
-
-    public final void setComments(ArrayList<Comment> comments) {
-	this.comments = comments;
+    public Comment getComment(int index) {
+	return comments.get(index);
     }
 
     public final int getMaxResults() {

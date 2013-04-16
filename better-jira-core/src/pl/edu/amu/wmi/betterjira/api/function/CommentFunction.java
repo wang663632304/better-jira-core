@@ -8,6 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.GetMethod;
+import pl.edu.amu.wmi.betterjira.api.PostMethod;
+import pl.edu.amu.wmi.betterjira.api.function.data.Comment;
 import pl.edu.amu.wmi.betterjira.api.function.data.CommentsList;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.Issue;
@@ -75,6 +77,59 @@ public class CommentFunction extends Function implements FunctionInterface {
 	    e.printStackTrace();
 	    switch (e.getStatusCode()) {
 	    case 404:
+		throw new Error("Server error\n" + e.getError(0));
+	    default:
+		throw new BadResponse("Server returns unknown status: "
+			+ e.getStatusCode());
+	    }
+	}
+	return null;
+    }
+
+    public Comment sendComment(String message) throws BadResponse {
+	Comment comment = new Comment();
+	comment.setBody(message);
+	return sendComment(comment);
+    }
+
+    /**
+     * @param comment
+     * @return updated comment object
+     * @throws BadResponse
+     */
+    public Comment sendComment(Comment comment) throws BadResponse {
+	PostMethod postMethod = new PostMethod(getFunctionName());
+
+	try {
+	    JSONObject jsonObjectRequest = new JSONObject();
+	    jsonObjectRequest.put("body", comment.getBody());
+
+	    postMethod.setEntity(jsonObjectRequest);
+
+	    JSONObject response = (JSONObject) response(postMethod, 201);
+
+	    DataParser.parse(comment, response);
+
+	    return comment;
+
+	} catch (UnsupportedEncodingException e1) {
+	    e1.printStackTrace();
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	} catch (ClientProtocolException e) {
+	    e.printStackTrace();
+	} catch (IOException e) {
+	    e.printStackTrace();
+	} catch (IllegalStateException e) {
+	    e.printStackTrace();
+	} catch (EmptyResponse e) {
+	    e.printStackTrace();
+	} catch (NoStatusLine e) {
+	    e.printStackTrace();
+	} catch (StatusCode e) {
+	    e.printStackTrace();
+	    switch (e.getStatusCode()) {
+	    case 400:
 		throw new Error("Server error\n" + e.getError(0));
 	    default:
 		throw new BadResponse("Server returns unknown status: "

@@ -103,9 +103,9 @@ public abstract class Function {
      * @throws EmptyResponse
      * @throws JSONException
      */
-    protected Object response(ServerMethod serverMethod) throws StatusCode,
-	    ClientProtocolException, IOException, NoStatusLine,
-	    IllegalStateException, EmptyResponse, JSONException {
+    protected Object response(ServerMethod serverMethod, int correctStatusCode)
+	    throws StatusCode, ClientProtocolException, IOException,
+	    NoStatusLine, IllegalStateException, EmptyResponse, JSONException {
 	HttpResponse httpResponse = ServerConnector.execute(serverMethod,
 		session);
 
@@ -113,11 +113,17 @@ public abstract class Function {
 
 	Object parseResponse = parseResponse(httpResponse);
 
-	if (statusCode != 200) {
+	if (statusCode != correctStatusCode) {
 	    throw new StatusCode(statusCode,
 		    getErrorMessage((JSONObject) parseResponse));
 	}
 
 	return parseResponse;
+    }
+
+    protected Object response(ServerMethod serverMethod) throws StatusCode,
+	    ClientProtocolException, IOException, NoStatusLine,
+	    IllegalStateException, EmptyResponse, JSONException {
+	return response(serverMethod, 200);
     }
 }
