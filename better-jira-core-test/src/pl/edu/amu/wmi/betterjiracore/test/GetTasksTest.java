@@ -45,6 +45,5 @@ public class GetTasksTest extends
 
 	System.out
 		.println("=====================================================");
-	issues.parseObject(IssueList.class, null);
     }
 }
