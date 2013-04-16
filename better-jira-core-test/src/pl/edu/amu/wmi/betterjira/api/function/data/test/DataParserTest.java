@@ -58,7 +58,7 @@ public class DataParserTest extends
 		assertEquals(0, issue2.getAggregatetimeestimate());
 		assertNull(issue2.getDescription());
 		assertEquals(0, issue2.getTimeestimate());
-		assertEquals(-1, issue1.getWorkratio());
+		assertEquals(-1, issue2.getWorkratio());
 
 	}
 

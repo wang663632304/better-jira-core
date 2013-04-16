@@ -75,7 +75,7 @@ public abstract class Function {
 	if (total.charAt(0) == '[') {
 	    return new JSONArray(total.toString());
 	} else {
-	    return new JSONTokener(total.toString());
+	    return new JSONObject(total.toString());
 	}
     }
 
