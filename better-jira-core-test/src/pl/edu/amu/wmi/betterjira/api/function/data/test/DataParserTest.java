@@ -1,5 +1,9 @@
 package pl.edu.amu.wmi.betterjira.api.function.data.test;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -7,9 +11,14 @@ import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.Issue;
 import pl.edu.amu.wmi.betterjira.api.function.data.IssueList;
 import pl.edu.amu.wmi.betterjira.api.function.data.IssueType;
+import pl.edu.amu.wmi.betterjira.api.function.data.Priority;
+import pl.edu.amu.wmi.betterjira.api.function.data.Project;
+import pl.edu.amu.wmi.betterjira.api.function.data.Status;
 import pl.edu.amu.wmi.betterjira.api.function.data.User;
+import android.annotation.SuppressLint;
 import android.test.ActivityInstrumentationTestCase2;
 
+@SuppressLint("SimpleDateFormat")
 public class DataParserTest extends
 	ActivityInstrumentationTestCase2<TestActivity> {
 
@@ -18,6 +27,9 @@ public class DataParserTest extends
     }
 
     public void testParse() throws JSONException {
+
+	DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+	df.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 	// issue list
 	JSONObject jsonObject1 = new JSONObject(
@@ -32,12 +44,11 @@ public class DataParserTest extends
 
 	// issue 1 (from issueList)
 	Issue issue1 = issueList.getIssue(0);
+	assertNotNull(issue1);
 	assertEquals(10420, issue1.getId());
 	assertEquals("BET-31", issue1.getKey());
-	assertEquals("Sun Apr 14 09:02:47 GMT+00:00 2013", issue1.getCreated()
-		.toString());
-	assertEquals("Sun Apr 14 09:02:47 GMT+00:00 2013", issue1.getUpdated()
-		.toString());
+	assertEquals("Sun Apr 14 09:02:47 2013", df.format(issue1.getCreated()));
+	assertEquals("Sun Apr 14 09:02:47 2013", df.format(issue1.getUpdated()));
 	assertEquals(3600, issue1.getAggregatetimeestimate());
 	assertEquals("Uzyć metody\r\n/rest/auth/1/session via DELETE",
 		issue1.getDescription());
@@ -46,18 +57,54 @@ public class DataParserTest extends
 
 	// issue1 - assignee user1
 	User user1 = issue1.getAssignee();
+	assertNotNull(user1);
 	assertEquals("s362617", user1.getName());
 	assertEquals("dd32438@st.amu.edu.pl", user1.getEmailAddress());
 	assertEquals("Dawid Drozd", user1.getDisplayName());
 
+	// issue1 - reporter user2
+	User user2 = issue1.getReporter();
+	assertNotNull(user2);
+	assertEquals("s362617", user2.getName());
+	assertEquals("dd32438@st.amu.edu.pl", user2.getEmailAddress());
+	assertEquals("Dawid Drozd", user2.getDisplayName());
+
 	// issue1 - issueType
 	IssueType issueType1 = issue1.getIssuetype();
+	assertNotNull(issueType1);
 	assertEquals(3, issueType1.getId());
-	assertEquals("A task that needs to be done.", issueType1.getDescription());
+	assertEquals("A task that needs to be done.",
+		issueType1.getDescription());
 	assertEquals("https: //jira.wmi.amu.edu.pl/images/icons/task.gif",
 		issueType1.getIconUrl());
 	assertEquals("Task", issueType1.getName());
 	assertEquals(false, issueType1.isSubtask());
+
+	// issue1 - priority priority1
+	Priority priority1 = issue1.getPriority();
+	assertNotNull(priority1);
+	assertEquals(3, priority1.getId());
+	assertEquals("Major", priority1.getName());
+	assertEquals(
+		"https://jira.wmi.amu.edu.pl/images/icons/priority_major.gif",
+		priority1.getIconUrl());
+
+	// issue1 - project project1
+	Project project1 = issue1.getProject();
+	assertNotNull(project1);
+	assertEquals(10018, project1.getId());
+	assertEquals("BET", project1.getKey());
+	assertEquals("BetterJira", project1.getName());
+
+	// issue1 - status status1
+	Status status1 = issue1.getStatus();
+	assertNotNull(status1);
+	assertEquals(
+		"The issue is open and ready for the assignee to start work on it.",
+		status1.getDescription());
+	assertEquals(
+		"https://jira.wmi.amu.edu.pl/images/icons/status_open.gif",
+		status1.getIconUrl());
 
 	// issue2
 	JSONObject jsonObject2 = new JSONObject(
@@ -67,25 +114,33 @@ public class DataParserTest extends
 	DataParser.parse(issue2, jsonObject2);
 	assertEquals(10370, issue2.getId());
 	assertEquals("BET-15", issue2.getKey());
-	assertEquals("Tue Apr 09 07:30:20 GMT+00:00 2013", issue2.getCreated()
-		.toString());
-	assertEquals("Mon Apr 15 20:07:11 GMT+00:00 2013", issue2.getUpdated()
-		.toString());
+	assertEquals("Tue Apr 09 07:30:20 2013", df.format(issue2.getCreated()));
+	assertEquals("Mon Apr 15 20:07:11 2013", df.format(issue2.getUpdated()));
 	assertEquals(0, issue2.getAggregatetimeestimate());
 	assertNull(issue2.getDescription());
 	assertEquals(0, issue2.getTimeestimate());
 	assertEquals(-1, issue2.getWorkratio());
 
-	// issue2 - assignee user2
-	User user2 = issue2.getAssignee();
-	assertEquals("s369962", user2.getName());
-	assertEquals("mm54312@st.amu.edu.pl", user2.getEmailAddress());
-	assertEquals("Marcin Skibicki", user2.getDisplayName());
+	// issue2 - assignee user3
+	User user3 = issue2.getAssignee();
+	assertNotNull(user3);
+	assertEquals("s369962", user3.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user3.getEmailAddress());
+	assertEquals("Marcin Skibicki", user3.getDisplayName());
+
+	// issue2 - reporter user4
+	User user4 = issue2.getReporter();
+	assertNotNull(user4);
+	assertEquals("s362631", user4.getName());
+	assertEquals("dj18125@st.amu.edu.pl", user4.getEmailAddress());
+	assertEquals("Dawid Jewko", user4.getDisplayName());
 
 	// issue2 - issueType
 	IssueType issueType2 = issue2.getIssuetype();
+	assertNotNull(issueType2);
 	assertEquals(3, issueType2.getId());
-	assertEquals("A task that needs to be done.", issueType2.getDescription());
+	assertEquals("A task that needs to be done.",
+		issueType2.getDescription());
 	assertEquals("https://jira.wmi.amu.edu.pl/images/icons/task.gif",
 		issueType2.getIconUrl());
 	assertEquals("Task", issueType2.getName());
