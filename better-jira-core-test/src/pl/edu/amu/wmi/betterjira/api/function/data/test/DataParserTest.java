@@ -7,6 +7,8 @@ import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.edu.amu.wmi.betterjira.api.function.data.Comment;
+import pl.edu.amu.wmi.betterjira.api.function.data.CommentsList;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.Issue;
 import pl.edu.amu.wmi.betterjira.api.function.data.IssueList;
@@ -69,7 +71,7 @@ public class DataParserTest extends
 	assertEquals("dd32438@st.amu.edu.pl", user2.getEmailAddress());
 	assertEquals("Dawid Drozd", user2.getDisplayName());
 
-	// issue1 - issueType
+	// issue1 - issueType issueType1
 	IssueType issueType1 = issue1.getIssuetype();
 	assertNotNull(issueType1);
 	assertEquals(3, issueType1.getId());
@@ -135,7 +137,7 @@ public class DataParserTest extends
 	assertEquals("dj18125@st.amu.edu.pl", user4.getEmailAddress());
 	assertEquals("Dawid Jewko", user4.getDisplayName());
 
-	// issue2 - issueType
+	// issue2 - issueType issueType2
 	IssueType issueType2 = issue2.getIssuetype();
 	assertNotNull(issueType2);
 	assertEquals(3, issueType2.getId());
@@ -146,5 +148,61 @@ public class DataParserTest extends
 	assertEquals("Task", issueType2.getName());
 	assertEquals(false, issueType2.isSubtask());
 
+	// commentsList1
+	JSONObject jsonObject3 = new JSONObject(
+		"{\"startAt\":0,\"maxResults\":2,\"total\":2,\"comments\":[{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10220/comment/10136\",\"id\":\"10136\",\"author\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s369962\",\"name\":\"s369962\",\"emailAddress\":\"mm54312@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10122\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10122\"},\"displayName\":\"Marcin Skibicki\",\"active\":true},\"body\":\"umgnt \",\"updateAuthor\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s369962\",\"name\":\"s369962\",\"emailAddress\":\"mm54312@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10122\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10122\"},\"displayName\":\"Marcin Skibicki\",\"active\":true},\"created\":\"2013-03-20T14:37:22.807+0100\",\"updated\":\"2013-03-20T14:37:22.807+0100\"},{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10220/comment/10137\",\"id\":\"10137\",\"author\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s369962\",\"name\":\"s369962\",\"emailAddress\":\"mm54312@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10122\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10122\"},\"displayName\":\"Marcin Skibicki\",\"active\":true},\"body\":\"umgnt \",\"updateAuthor\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s369962\",\"name\":\"s369962\",\"emailAddress\":\"mm54312@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10122\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10122\"},\"displayName\":\"Marcin Skibicki\",\"active\":true},\"created\":\"2013-03-20T14:37:26.936+0100\",\"updated\":\"2013-03-20T14:37:26.936+0100\"}]}");
+	CommentsList commentsList1 = new CommentsList();
+	DataParser.parse(commentsList1, jsonObject3);
+	assertEquals(2, commentsList1.getMaxResults());
+	assertEquals(0, commentsList1.getStartAt());
+	assertEquals(2, commentsList1.getTotal());
+
+	// commentsList - comment comment1
+	Comment comment1 = commentsList1.getComment(0);
+	assertNotNull(comment1);
+	assertEquals(10136, comment1.getId());
+	assertEquals("umgnt ", comment1.getBody());
+	assertEquals("Wed Mar 20 13:37:22 2013",
+		df.format(comment1.getCreated()));
+	assertEquals("Wed Mar 20 13:37:22 2013",
+		df.format(comment1.getUpdated()));
+
+	// comment1 - author user5
+	User user5 = comment1.getAuthor();
+	assertNotNull(user5);
+	assertEquals("s369962", user5.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user5.getEmailAddress());
+	assertEquals("Marcin Skibicki", user5.getDisplayName());
+
+	// comment1 - updateAuthor user6
+	User user6 = comment1.getUpdateAuthor();
+	assertNotNull(user6);
+	assertEquals("s369962", user6.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user6.getEmailAddress());
+	assertEquals("Marcin Skibicki", user6.getDisplayName());
+
+	// commentsList - comment comment2
+	Comment comment2 = commentsList1.getComment(1);
+	assertNotNull(comment2);
+	assertEquals(10137, comment2.getId());
+	assertEquals("umgnt ", comment2.getBody());
+	assertEquals("Wed Mar 20 13:37:26 2013",
+		df.format(comment2.getCreated()));
+	assertEquals("Wed Mar 20 13:37:26 2013",
+		df.format(comment2.getUpdated()));
+
+	// comment2 - author user7
+	User user7 = comment2.getAuthor();
+	assertNotNull(user7);
+	assertEquals("s369962", user7.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user7.getEmailAddress());
+	assertEquals("Marcin Skibicki", user7.getDisplayName());
+
+	// comment2 - updateAuthor user8
+	User user8 = comment2.getUpdateAuthor();
+	assertNotNull(user8);
+	assertEquals("s369962", user8.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user8.getEmailAddress());
+	assertEquals("Marcin Skibicki", user8.getDisplayName());
     }
 }
