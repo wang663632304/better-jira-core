@@ -13,12 +13,11 @@ public class GetMethod extends ServerMethod {
 
     private static final int HTTP_BUFFER_SIZE = 8192;
 
-    private String m_methodName;
     private HttpGet m_httpGet;
     private HttpParams m_httpHttpParams;
 
-    public GetMethod(String methodName) {
-	this.m_methodName = methodName;
+    public GetMethod(String functionName) {
+	super(functionName);
 	m_httpGet = new HttpGet();
 	m_httpHttpParams = new BasicHttpParams();
 	HttpConnectionParams.setSoTimeout(m_httpHttpParams, 0);
@@ -39,10 +38,5 @@ public class GetMethod extends ServerMethod {
     @Override
     public void setURL(URL url) throws URISyntaxException {
 	m_httpGet.setURI(url.toURI());
-    }
-
-    @Override
-    public String getFunctionName() {
-	return m_methodName;
     }
 }

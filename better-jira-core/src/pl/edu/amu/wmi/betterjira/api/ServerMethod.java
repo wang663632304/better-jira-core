@@ -9,7 +9,12 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.params.HttpParams;
 
 public abstract class ServerMethod {
-    private long m_cacheTime;
+    private long cacheTime;
+    private String functionName;
+
+    public ServerMethod(String functionName) {
+	this.functionName = functionName;
+    }
 
     protected HttpURLConnection openConnection(URL url) throws IOException {
 	return (HttpURLConnection) url.openConnection();
@@ -19,7 +24,9 @@ public abstract class ServerMethod {
 
     protected abstract HttpRequestBase getRequest();
 
-    public abstract String getFunctionName();
+    public String getFunctionName() {
+	return functionName;
+    }
 
     public abstract void setURL(URL url) throws URISyntaxException;
 

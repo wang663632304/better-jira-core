@@ -17,12 +17,11 @@ import android.util.Log;
 public class PostMethod extends ServerMethod {
 
     private HttpPost m_httpPost;
-    private String m_functionName;
     private BasicHttpParams m_httpHttpParams;
     private static final int HTTP_BUFFER_SIZE = 8192;
 
     public PostMethod(String functionName) {
-	this.m_functionName = functionName;
+	super(functionName);
 	m_httpPost = new HttpPost();
 	m_httpHttpParams = new BasicHttpParams();
 	HttpConnectionParams.setSoTimeout(m_httpHttpParams, 0);
@@ -51,11 +50,6 @@ public class PostMethod extends ServerMethod {
     @Override
     public void setURL(URL url) throws URISyntaxException {
 	m_httpPost.setURI(url.toURI());
-    }
-
-    @Override
-    public String getFunctionName() {
-	return m_functionName;
     }
 
 }

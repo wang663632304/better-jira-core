@@ -12,6 +12,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.edu.amu.wmi.betterjira.api.DeleteMethod;
 import pl.edu.amu.wmi.betterjira.api.PostMethod;
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
@@ -107,9 +108,33 @@ public class BasicAuthentication extends Function implements FunctionInterface {
 	throw new UnsupportedOperationException("Not implemented");
     }
 
-    public void logout() {
-	// TODO Implement
-	throw new UnsupportedOperationException("Not implemented");
+    public void logout(Session session) throws LoginException, BadResponse {
+	DeleteMethod deleteMethod = new DeleteMethod(getFunctionName());
+	try {
+	    response(deleteMethod, 204);
+	    session.destroy();
+	} catch (ClientProtocolException e) {
+	    e.printStackTrace();
+	} catch (IllegalStateException e) {
+	    e.printStackTrace();
+	} catch (StatusCode e) {
+	    e.printStackTrace();
+	    switch (e.getStatusCode()) {
+	    case 401:
+		throw new LoginException("You are not logged in");
+	    default:
+		throw new BadResponse("Server returns unknown status: "
+			+ e.getStatusCode());
+	    }
+	} catch (IOException e) {
+	    e.printStackTrace();
+	} catch (NoStatusLine e) {
+	    e.printStackTrace();
+	} catch (EmptyResponse e) {
+	    e.printStackTrace();
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	}
     }
 
     @Override
