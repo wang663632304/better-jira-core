@@ -77,7 +77,7 @@ public class DataParserTest extends
 	assertEquals(3, issueType1.getId());
 	assertEquals("A task that needs to be done.",
 		issueType1.getDescription());
-	assertEquals("https: //jira.wmi.amu.edu.pl/images/icons/task.gif",
+	assertEquals("https://jira.wmi.amu.edu.pl/images/icons/task.gif",
 		issueType1.getIconUrl());
 	assertEquals("Task", issueType1.getName());
 	assertEquals(false, issueType1.isSubtask());

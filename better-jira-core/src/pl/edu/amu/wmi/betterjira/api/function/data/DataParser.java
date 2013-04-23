@@ -32,7 +32,6 @@ public class DataParser {
 		    if (jsonFields == null) {
 			jsonFields = jsonObject.getJSONObject("fields");
 		    }
-		    System.out.println("HERE");
 		    parseField(fields[i], jsonFields, object);
 		} else {
 		    parseField(fields[i], jsonObject, object);
@@ -132,6 +131,8 @@ public class DataParser {
 	    Class<?> type = field.getType();
 	    Object subObject = type.newInstance();
 	    parse(subObject, jsonObject.getJSONObject(field.getName()));
+	
+	    field.set(object, subObject);
 	}
 	field.setAccessible(accessible);
     }
