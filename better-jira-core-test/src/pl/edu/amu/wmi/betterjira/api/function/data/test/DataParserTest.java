@@ -204,5 +204,31 @@ public class DataParserTest extends
 	assertEquals("s369962", user8.getName());
 	assertEquals("mm54312@st.amu.edu.pl", user8.getEmailAddress());
 	assertEquals("Marcin Skibicki", user8.getDisplayName());
+
+	// comment3
+	JSONObject jsonObject4 = new JSONObject(
+		"{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10220/comment/10137\",\"id\":\"10137\",\"author\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s369962\",\"name\":\"s369962\",\"emailAddress\":\"mm54312@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&ownerId=s369962&avatarId=10303\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?ownerId=s369962&avatarId=10303\"},\"displayName\":\"Marcin Skibicki\",\"active\":true},\"body\":\"umgnt \",\"updateAuthor\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s369962\",\"name\":\"s369962\",\"emailAddress\":\"mm54312@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&ownerId=s369962&avatarId=10303\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?ownerId=s369962&avatarId=10303\"},\"displayName\":\"Marcin Skibicki\",\"active\":true},\"created\":\"2013-03-20T14:37:26.936+0100\",\"updated\":\"2013-03-20T14:37:26.936+0100\"}");
+	Comment comment3 = new Comment();
+	DataParser.parse(comment3, jsonObject4);
+	assertEquals(10137, comment3.getId());
+	assertEquals("umgnt ", comment3.getBody());
+	assertEquals("Wed Mar 20 13:37:26 2013",
+		df.format(comment3.getCreated()));
+	assertEquals("Wed Mar 20 13:37:26 2013",
+		df.format(comment3.getUpdated()));
+
+	// comment2 - author user7
+	User user9 = comment3.getAuthor();
+	assertNotNull(user9);
+	assertEquals("s369962", user9.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user9.getEmailAddress());
+	assertEquals("Marcin Skibicki", user9.getDisplayName());
+
+	// comment2 - updateAuthor user10
+	User user10 = comment3.getUpdateAuthor();
+	assertNotNull(user10);
+	assertEquals("s369962", user10.getName());
+	assertEquals("mm54312@st.amu.edu.pl", user10.getEmailAddress());
+	assertEquals("Marcin Skibicki", user10.getDisplayName());
     }
 }
