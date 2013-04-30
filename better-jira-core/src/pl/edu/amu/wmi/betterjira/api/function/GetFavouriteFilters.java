@@ -29,7 +29,7 @@ public class GetFavouriteFilters extends Function implements FunctionInterface {
 	return "/rest/api/2/filter/favourite";
     }
 
-    public ArrayList<Filter> getAllVisibleProjects() throws BadResponse {
+    public ArrayList<Filter> getFilters() throws BadResponse {
 	GetMethod getMethod = new GetMethod(getFunctionName());
 	try {
 	    JSONArray response = (JSONArray) response(getMethod);

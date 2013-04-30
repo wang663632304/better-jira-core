@@ -85,4 +85,8 @@ public class Filter {
 	this.favourite = favourite;
     }
 
+    @Override
+    public String toString() {
+	return name;
+    }
 }

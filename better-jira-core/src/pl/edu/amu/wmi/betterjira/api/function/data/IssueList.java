@@ -13,8 +13,9 @@ public class IssueList {
 
     private JSONObject jsonObjectRequest;
 
+    // TODO write test!
     public void setRequest(JSONObject jsonObjectRequest) {
-	if (jsonObjectRequest != null) {
+	if (this.jsonObjectRequest != null) {
 	    throw new IllegalArgumentException("You can set it only once");
 	}
 	this.jsonObjectRequest = jsonObjectRequest;
@@ -50,5 +51,9 @@ public class IssueList {
 
     public Issue getIssue(int index) {
 	return issues.get(index);
+    }
+
+    public int size() {
+	return issues.size();
     }
 }

@@ -48,7 +48,7 @@ public class SearchForIssues extends Function implements FunctionInterface {
      * @throws InvalidJQLCommand
      * @throws BadResponse
      */
-    public Object search(String JQL, int startAt, int maxResults)
+    public IssueList search(String JQL, int startAt, int maxResults)
 	    throws InvalidJQLCommand, BadResponse {
 	return search(JQL, startAt, maxResults, null);
     }

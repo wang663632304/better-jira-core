@@ -10,7 +10,7 @@ public class CommentsList {
     private int startAt;
 
     public Comment getComment(int index) {
-	return comments.get(index);
+	return getComments().get(index);
     }
 
     public final int getMaxResults() {
@@ -35,6 +35,14 @@ public class CommentsList {
 
     public final void setStartAt(int startAt) {
 	this.startAt = startAt;
+    }
+
+    public ArrayList<Comment> getComments() {
+	return comments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+	this.comments = comments;
     }
 
 }

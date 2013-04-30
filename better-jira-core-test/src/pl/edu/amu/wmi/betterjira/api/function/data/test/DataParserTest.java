@@ -17,6 +17,7 @@ import pl.edu.amu.wmi.betterjira.api.function.data.Priority;
 import pl.edu.amu.wmi.betterjira.api.function.data.Project;
 import pl.edu.amu.wmi.betterjira.api.function.data.Status;
 import pl.edu.amu.wmi.betterjira.api.function.data.User;
+import pl.edu.amu.wmi.betterjiracore.test.ParseJsonDictionaryCategoryList;
 import android.annotation.SuppressLint;
 import android.test.ActivityInstrumentationTestCase2;
 
@@ -30,6 +31,11 @@ public class DataParserTest extends
 
     public void testParse() throws JSONException {
 
+	new ParseJsonDictionaryCategoryList()
+		.parse("[[[\"1\",\"Travel\",\"14\"],[\"2\",\"Business\",\"3\"],[\"3\",\"Animals\",\"4\"],[\"4\",\"House\",\"3\"],[\"5\",\"Other\",\"551\"],[\"6\",\"Sport\",\"2\"],[\"7\",\"Health\",\"13\"],[\"8\",\"Human\",\"5\"]],{\"status\":\"1\"}]");
+
+	if (true)
+	    return;
 	DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
 	df.setTimeZone(TimeZone.getTimeZone("GMT"));
 
