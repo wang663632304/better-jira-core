@@ -12,6 +12,7 @@ import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
+import pl.edu.amu.wmi.betterjira.utils.UserInfo;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class LoginTest extends ActivityInstrumentationTestCase2<TestActivity> {
@@ -26,7 +27,7 @@ public class LoginTest extends ActivityInstrumentationTestCase2<TestActivity> {
 	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
 
 	BasicAuthentication basic = new BasicAuthentication();
-	Session session = basic.login("test", "test");
+	Session session = basic.login(UserInfo.login, UserInfo.password);
 	System.out.println("Session name: " + session.getName());
 	System.out.println("Session value: " + session.getValue());
 
