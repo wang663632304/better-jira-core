@@ -19,7 +19,7 @@ import pl.edu.amu.wmi.betterjira.api.function.exception.EmptyResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
 import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 
-public class CommentFunction extends Function implements FunctionInterface {
+public class CommentFunction extends Function {
 
     private String issueKey;
     private int issueId;

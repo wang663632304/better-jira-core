@@ -2,29 +2,24 @@ package pl.edu.amu.wmi.betterjira.api.function;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.PostMethod;
-import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.IssueList;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.EmptyResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.InvalidJQLCommand;
-import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
 import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
 import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 
-public class SearchForIssues extends Function implements FunctionInterface {
+public class SearchForIssues extends Function {
 
     public SearchForIssues(Session session) {
 	super(session);

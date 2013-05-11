@@ -2,50 +2,36 @@ package pl.edu.amu.wmi.betterjira.api.function;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 
 import org.apache.http.client.ClientProtocolException;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.GetMethod;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
-import pl.edu.amu.wmi.betterjira.api.function.data.Filter;
+import pl.edu.amu.wmi.betterjira.api.function.data.Issue;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.EmptyResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
 import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 
-public class GetFavouriteFilters extends Function {
+public class GetIssue extends Function {
 
-    public GetFavouriteFilters(Session session) {
+    private Issue issue;
+
+    public GetIssue(Session session) {
 	super(session);
     }
 
-    @Override
-    public String getFunctionName() {
-	return "/rest/api/2/filter/favourite";
-    }
-
-    public ArrayList<Filter> getFilters() throws BadResponse {
+    public Issue getIssue(Issue issue) throws Exception {
+	this.issue = issue;
 	GetMethod getMethod = new GetMethod(getFunctionName());
 	try {
-	    JSONArray response = (JSONArray) response(getMethod);
+	    JSONObject response = (JSONObject) response(getMethod);
 
-	    ArrayList<Filter> filters = new ArrayList<Filter>();
-
-	    for (int i = 0; i < response.length(); ++i) {
-
-		JSONObject jsonObject = response.getJSONObject(i);
-
-		Filter filter = new Filter();
-
-		DataParser.parse(filter, jsonObject);
-		filters.add(filter);
-	    }
-	    return filters;
+	    DataParser.parse(issue, response);
+	    return issue;
 
 	} catch (UnsupportedEncodingException e1) {
 	    e1.printStackTrace();
@@ -64,13 +50,26 @@ public class GetFavouriteFilters extends Function {
 	} catch (StatusCode e) {
 	    e.printStackTrace();
 	    switch (e.getStatusCode()) {
-	    case 400:
-		throw new Error("Server error\n" + e.getError(0));
+	    case 404:
+		throw new Exception("No such issue");
 	    default:
 		throw new BadResponse("Server returns unknown status: "
 			+ e.getStatusCode());
 	    }
 	}
 	return null;
+    }
+
+    public Issue getIssue(String issueKey) throws Exception {
+	Issue issue = new Issue();
+	issue.setKey(issueKey);
+	return getIssue(issue);
+    }
+
+    @Override
+    public String getFunctionName() {
+	StringBuilder stringBuilder = new StringBuilder("/rest/api/2/issue/");
+	stringBuilder.append(issue.getKey());
+	return stringBuilder.toString();
     }
 }

@@ -24,7 +24,7 @@ import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
 import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
 import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 
-public class BasicAuthentication extends Function implements FunctionInterface {
+public class BasicAuthentication extends Function {
 
     public BasicAuthentication() {
 	super(null);

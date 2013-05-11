@@ -18,7 +18,7 @@ import pl.edu.amu.wmi.betterjira.api.function.exception.EmptyResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
 import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 
-public class GetAllProjects extends Function implements FunctionInterface {
+public class GetAllProjects extends Function {
 
     public GetAllProjects(Session session) {
 	super(session);

@@ -26,7 +26,7 @@ import pl.edu.amu.wmi.betterjira.api.function.exception.NoStatusLine;
 import pl.edu.amu.wmi.betterjira.api.function.exception.StatusCode;
 import android.util.Log;
 
-public abstract class Function {
+public abstract class Function implements FunctionInterface {
 
     private static String TAG = "WEB";
     private Session session;
