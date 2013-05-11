@@ -15,6 +15,7 @@ import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.InvalidJQLCommand;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
+import pl.edu.amu.wmi.betterjira.utils.UserInfo;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class CommentsTest extends
@@ -31,7 +32,7 @@ public class CommentsTest extends
 	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
 
 	BasicAuthentication basic = new BasicAuthentication();
-	Session session = basic.login("test", "test");
+	Session session = basic.login(UserInfo.login, UserInfo.password);
 
 	CommentFunction commentFunction = new CommentFunction(session, "BET-36");
 

@@ -12,6 +12,7 @@ import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.InvalidJQLCommand;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
+import pl.edu.amu.wmi.betterjira.utils.UserInfo;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class SearchForIssuesTest extends ActivityInstrumentationTestCase2<TestActivity>{
@@ -27,7 +28,7 @@ public class SearchForIssuesTest extends ActivityInstrumentationTestCase2<TestAc
 	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
 
 	BasicAuthentication basic = new BasicAuthentication();
-	Session session = basic.login("login", "password");
+	Session session = basic.login(UserInfo.login, UserInfo.password);
 	assertNotNull(session);
 
 	String JQL = new String("status=\"open\"");
@@ -45,7 +46,7 @@ public class SearchForIssuesTest extends ActivityInstrumentationTestCase2<TestAc
 	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
 
 	BasicAuthentication basic = new BasicAuthentication();
-	Session session = basic.login("login", "password");
+	Session session = basic.login(UserInfo.login, UserInfo.password);
 	assertNotNull(session);
 	SearchForIssues issues = new SearchForIssues(session);
 	assertEquals("/rest/api/2/search", issues.getFunctionName());

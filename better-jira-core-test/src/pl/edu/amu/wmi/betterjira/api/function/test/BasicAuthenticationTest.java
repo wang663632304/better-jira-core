@@ -13,6 +13,7 @@ import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
 import pl.edu.amu.wmi.betterjira.api.function.exception.BadResponse;
 import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
+import pl.edu.amu.wmi.betterjira.utils.UserInfo;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class BasicAuthenticationTest extends
@@ -29,7 +30,7 @@ public class BasicAuthenticationTest extends
 
 	BasicAuthentication basic = new BasicAuthentication();
 	/* Twoje dane do logowania */
-	Session session = basic.login("login", "password");
+	Session session = basic.login(UserInfo.login, UserInfo.password);
 	assertNotNull(session.getName());
 	assertNotNull(session.getValue());
 	assertNotNull(session.getLoginInfo());
