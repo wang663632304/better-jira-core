@@ -3,6 +3,9 @@ package pl.edu.amu.wmi.betterjira.api.function.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.function.BasicAuthentication;
 import pl.edu.amu.wmi.betterjira.api.function.SearchForIssues;
@@ -19,12 +22,9 @@ public class SearchForIssuesTest extends ActivityInstrumentationTestCase2<TestAc
 
     public SearchForIssuesTest() {
 	super(TestActivity.class.getPackage().toString(), TestActivity.class);
-	
-	
-	
     }
     
-    public void testSearch() throws MalformedURLException, LoginException, BadResponse, InvalidJQLCommand{
+    public void testSearch() throws MalformedURLException, LoginException, BadResponse, InvalidJQLCommand, JSONException{
 	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
 
 	BasicAuthentication basic = new BasicAuthentication();
@@ -36,10 +36,24 @@ public class SearchForIssuesTest extends ActivityInstrumentationTestCase2<TestAc
 	assertNotNull(issues);
 	IssueList issueList1 = (IssueList) issues.search(JQL, 0, 5);
 	assertNotNull(issueList1);
-	assertTrue(issueList1.getTotal()<=5);
+	assertEquals(JQL, issueList1.getRequest().get("jql"));
+	assertEquals(0, issueList1.getRequest().get("startAt"));
+	assertEquals(5, issueList1.getRequest().get("maxResults"));
+	assertEquals(0, issueList1.getStartAt());
 	assertTrue(issueList1.getMaxResults()<=5);
 	
 
+    }
+    
+    public void testNextResults() throws MalformedURLException, LoginException, BadResponse{
+    	if(true) return;
+    	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
+
+    	BasicAuthentication basic = new BasicAuthentication();
+    	Session session = basic.login(UserInfo.login, UserInfo.password);
+    	assertNotNull(session);
+    	
+    	
     }
     
     public void testGetFunctionName() throws LoginException, BadResponse, MalformedURLException{
