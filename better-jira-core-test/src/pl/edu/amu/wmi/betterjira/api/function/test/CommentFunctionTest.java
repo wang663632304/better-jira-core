@@ -41,10 +41,11 @@ public class CommentFunctionTest extends
 		assertNotNull(comments);
 		for(Comment comm : comments){
 			assertNotNull(comm);
-			
 		}
 		assertEquals("Marcin Skibicki", comments.get(0).getAuthor().getDisplayName());
-		assertEquals("umgnt", comments.get(0).getBody());
+		assertEquals("umgnt ", comments.get(0).getBody());
+		assertEquals("s362631", comments.get(2).getAuthor().getName());
+		assertEquals("test1", comments.get(2).getBody());
 
 	}
 
