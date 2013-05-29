@@ -109,6 +109,8 @@ public class BasicAuthentication extends Function {
     }
 
     public void logout(Session session) throws LoginException, BadResponse {
+
+	setSession(session);
 	DeleteMethod deleteMethod = new DeleteMethod(getFunctionName());
 	try {
 	    response(deleteMethod, 204);

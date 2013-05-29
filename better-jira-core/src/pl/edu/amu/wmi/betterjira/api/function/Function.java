@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ public abstract class Function implements FunctionInterface {
 	return statusLine.getStatusCode();
     }
 
+    protected void setSession(Session session) {
+	this.session = session;
+    }
+
     /**
      * @param httpResponse
      * @return can be JSONObject or JSONArray what you need :D
@@ -58,8 +63,10 @@ public abstract class Function implements FunctionInterface {
 	    JSONException {
 
 	HttpEntity entity = httpResponse.getEntity();
+
+	// Delete method such logout return empty response
 	if (entity == null) {
-	    throw new EmptyResponse();
+	    return new JSONObject();
 	}
 
 	InputStream content = entity.getContent();
@@ -106,8 +113,12 @@ public abstract class Function implements FunctionInterface {
     protected Object response(ServerMethod serverMethod, int correctStatusCode)
 	    throws StatusCode, ClientProtocolException, IOException,
 	    NoStatusLine, IllegalStateException, EmptyResponse, JSONException {
-	HttpResponse httpResponse = ServerConnector.execute(serverMethod,
-		session);
+	HttpResponse httpResponse = null;
+	try {
+	    httpResponse = ServerConnector.execute(serverMethod, session);
+	} catch (URISyntaxException e) {
+	    return new JSONException(e.getMessage());
+	}
 
 	int statusCode = getStatusCode(httpResponse);
 

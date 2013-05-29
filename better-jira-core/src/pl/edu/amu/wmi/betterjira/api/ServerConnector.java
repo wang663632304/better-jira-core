@@ -57,18 +57,15 @@ public class ServerConnector {
     public static int HTTPS_PORT = 443;
 
     public static HttpResponse execute(ServerMethod method, Session session)
-	    throws ClientProtocolException, IOException {
+	    throws ClientProtocolException, IOException, URISyntaxException {
 
 	HttpClient httpClient = getNewHttpClient(method.getHttpParams());
 
 	StringBuilder stringBuilder = new StringBuilder(m_serverURL.toString());
 	stringBuilder.append(method.getFunctionName());
 
-	try {
-	    method.setURL(new URL(stringBuilder.toString()));
-	} catch (URISyntaxException e) {
-	    e.printStackTrace();
-	}
+	method.setURL(new URL(stringBuilder.toString()));
+
 	// Adding session key
 	if (session != null) {
 	    StringBuilder stringBuilderCookie = new StringBuilder(
