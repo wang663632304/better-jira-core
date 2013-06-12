@@ -55,7 +55,7 @@ public class BasicAuthenticationTest extends
 		assertEquals("JSESSIONID", session.getName());
 		assertEquals("4192C9DD35545EFFDAA9EAE196AFAC41", session.getValue());
 		assertEquals(184, session.getLoginInfo().getLoginCount());
-		assertEquals("Fri Jun 07 08:13:55 2013", session.getLoginInfo().getPreviousLoginTime());
+		assertEquals("Fri Jun 07 08:13:55 2013", df.format(session.getLoginInfo().getPreviousLoginTime()));
 		
 		server.shutdown();
 		
