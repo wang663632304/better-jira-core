@@ -41,6 +41,7 @@ public class GetAllProjectsTest extends
 		assertEquals("BetterJira", projects.get(0).getName());
 		assertEquals("BET", projects.get(0).getKey());
 		assertEquals(10018, projects.get(0).getId());
+		server.shutdown();
 
 	}
 }
