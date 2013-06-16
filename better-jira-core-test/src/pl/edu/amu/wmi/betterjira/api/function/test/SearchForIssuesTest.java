@@ -1,10 +1,10 @@
 package pl.edu.amu.wmi.betterjira.api.function.test;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
+import java.io.IOException;
 import org.json.JSONException;
-import org.json.JSONObject;
+
+import com.google.mockwebserver.MockResponse;
+import com.google.mockwebserver.MockWebServer;
 
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.function.BasicAuthentication;
@@ -18,51 +18,74 @@ import pl.edu.amu.wmi.betterjira.api.function.exception.LoginException;
 import pl.edu.amu.wmi.betterjira.utils.UserInfo;
 import android.test.ActivityInstrumentationTestCase2;
 
-public class SearchForIssuesTest extends ActivityInstrumentationTestCase2<TestActivity>{
+public class SearchForIssuesTest extends
+		ActivityInstrumentationTestCase2<TestActivity> {
 
-    public SearchForIssuesTest() {
-	super(TestActivity.class.getPackage().toString(), TestActivity.class);
-    }
-    
-    public void testSearch() throws MalformedURLException, LoginException, BadResponse, InvalidJQLCommand, JSONException{
-	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
+	public SearchForIssuesTest() {
+		super(TestActivity.class.getPackage().toString(), TestActivity.class);
+	}
 
-	BasicAuthentication basic = new BasicAuthentication();
-	Session session = basic.login(UserInfo.login, UserInfo.password);
-	assertNotNull(session);
+	public void testSearch() throws LoginException, BadResponse,
+			InvalidJQLCommand, JSONException, IOException {
 
-	String JQL = new String("status=\"open\"");
-	SearchForIssues issues = new SearchForIssues(session);
-	assertNotNull(issues);
-	IssueList issueList1 = (IssueList) issues.search(JQL, 0, 5);
-	assertNotNull(issueList1);
-	assertEquals(JQL, issueList1.getRequest().get("jql"));
-	assertEquals(0, issueList1.getRequest().get("startAt"));
-	assertEquals(5, issueList1.getRequest().get("maxResults"));
-	assertEquals(0, issueList1.getStartAt());
-	assertTrue(issueList1.getMaxResults()<=5);
-	
+		MockWebServer server = new MockWebServer();
+		server.enqueue(new MockResponse()
+				.setBody("{\"session\":{\"value\":\"4192C9DD35545EFFDAA9EAE196AFAC41\",\"name\":\"JSESSIONID\"},\"loginInfo\":{\"previousLoginTime\":\"2013-06-07T10:13:55.759+0200\",\"loginCount\":184}}"));
+		server.enqueue(new MockResponse()
+				.setBody("{\"expand\":\"schema,names\",\"startAt\":0,\"maxResults\":5,\"total\":17,\"issues\":[{\"expand\":\"editmeta,renderedFields,transitions,changelog,operations\",\"id\":\"10731\",\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10731\",\"key\":\"BET-67\",\"fields\":{\"summary\":\"Robotium testy\",\"progress\":{\"progress\":0,\"total\":0},\"issuetype\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issuetype/3\",\"id\":\"3\",\"description\":\"A task that needs to be done.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/task.gif\",\"name\":\"Task\",\"subtask\":false},\"votes\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-67/votes\",\"votes\":0,\"hasVoted\":false},\"resolution\":null,\"fixVersions\":[],\"resolutiondate\":null,\"timespent\":null,\"reporter\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362631\",\"name\":\"s362631\",\"emailAddress\":\"dj18125@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10118\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10118\"},\"displayName\":\"Dawid Jewko\",\"active\":true},\"aggregatetimeoriginalestimate\":null,\"created\":\"2013-06-07T09:02:27.000+0200\",\"updated\":\"2013-06-07T09:02:27.000+0200\",\"description\":null,\"priority\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/priority/3\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/priority_major.gif\",\"name\":\"Major\",\"id\":\"3\"},\"duedate\":null,\"customfield_10001\":null,\"issuelinks\":[],\"customfield_10004\":\"644\",\"watches\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-67/watchers\",\"watchCount\":1,\"isWatching\":true},\"customfield_10000\":null,\"subtasks\":[],\"status\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/status/1\",\"description\":\"The issue is open and ready for the assignee to start work on it.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/status_open.gif\",\"name\":\"Open\",\"id\":\"1\"},\"customfield_10006\":null,\"labels\":[],\"customfield_10005\":null,\"workratio\":-1,\"assignee\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362631\",\"name\":\"s362631\",\"emailAddress\":\"dj18125@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10118\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10118\"},\"displayName\":\"Dawid Jewko\",\"active\":true},\"aggregatetimeestimate\":null,\"project\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/project/BET\",\"id\":\"10018\",\"key\":\"BET\",\"name\":\"BetterJira\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?size=small&pid=10018&avatarId=10002\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?pid=10018&avatarId=10002\"}},\"versions\":[],\"environment\":null,\"timeestimate\":null,\"aggregateprogress\":{\"progress\":0,\"total\":0},\"lastViewed\":\"2013-06-07T09:02:28.289+0200\",\"components\":[{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/component/10004\",\"id\":\"10004\",\"name\":\"tests\"}],\"customfield_10010\":null,\"timeoriginalestimate\":null,\"aggregatetimespent\":null}},{\"expand\":\"editmeta,renderedFields,transitions,changelog,operations\",\"id\":\"10649\",\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10649\",\"key\":\"BET-61\",\"fields\":{\"summary\":\"Stworzenie layoutu timetrackera\",\"progress\":{\"progress\":0,\"total\":0},\"issuetype\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issuetype/3\",\"id\":\"3\",\"description\":\"A task that needs to be done.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/task.gif\",\"name\":\"Task\",\"subtask\":false},\"votes\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-61/votes\",\"votes\":0,\"hasVoted\":false},\"resolution\":null,\"fixVersions\":[],\"resolutiondate\":null,\"timespent\":null,\"reporter\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362631\",\"name\":\"s362631\",\"emailAddress\":\"dj18125@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10118\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10118\"},\"displayName\":\"Dawid Jewko\",\"active\":true},\"aggregatetimeoriginalestimate\":null,\"created\":\"2013-04-30T09:27:06.000+0200\",\"updated\":\"2013-05-11T17:39:15.000+0200\",\"description\":\"Description\",\"priority\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/priority/3\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/priority_major.gif\",\"name\":\"Major\",\"id\":\"3\"},\"duedate\":null,\"customfield_10001\":null,\"issuelinks\":[],\"customfield_10004\":\"619\",\"watches\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-61/watchers\",\"watchCount\":1,\"isWatching\":true},\"customfield_10000\":null,\"subtasks\":[],\"status\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/status/1\",\"description\":\"The issue is open and ready for the assignee to start work on it.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/status_open.gif\",\"name\":\"Open\",\"id\":\"1\"},\"customfield_10006\":null,\"labels\":[],\"customfield_10005\":null,\"workratio\":-1,\"assignee\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362617\",\"name\":\"s362617\",\"emailAddress\":\"dd32438@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&ownerId=s362617&avatarId=10203\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?ownerId=s362617&avatarId=10203\"},\"displayName\":\"Dawid Drozd\",\"active\":true},\"aggregatetimeestimate\":null,\"project\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/project/BET\",\"id\":\"10018\",\"key\":\"BET\",\"name\":\"BetterJira\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?size=small&pid=10018&avatarId=10002\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?pid=10018&avatarId=10002\"}},\"versions\":[],\"environment\":null,\"timeestimate\":null,\"aggregateprogress\":{\"progress\":0,\"total\":0},\"lastViewed\":\"2013-04-30T09:27:07.014+0200\",\"components\":[{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/component/10005\",\"id\":\"10005\",\"name\":\"ui\"}],\"customfield_10010\":null,\"timeoriginalestimate\":null,\"aggregatetimespent\":null}},{\"expand\":\"editmeta,renderedFields,transitions,changelog,operations\",\"id\":\"10615\",\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10615\",\"key\":\"BET-55\",\"fields\":{\"summary\":\"Wersje językowe (PL, EN, DE)\",\"progress\":{\"progress\":0,\"total\":0},\"issuetype\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issuetype/3\",\"id\":\"3\",\"description\":\"A task that needs to be done.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/task.gif\",\"name\":\"Task\",\"subtask\":false},\"votes\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-55/votes\",\"votes\":0,\"hasVoted\":false},\"resolution\":null,\"fixVersions\":[],\"resolutiondate\":null,\"timespent\":null,\"reporter\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362631\",\"name\":\"s362631\",\"emailAddress\":\"dj18125@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10118\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10118\"},\"displayName\":\"Dawid Jewko\",\"active\":true},\"aggregatetimeoriginalestimate\":null,\"created\":\"2013-04-27T11:51:57.000+0200\",\"updated\":\"2013-04-27T11:51:57.000+0200\",\"description\":null,\"priority\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/priority/4\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/priority_minor.gif\",\"name\":\"Minor\",\"id\":\"4\"},\"duedate\":null,\"customfield_10001\":null,\"issuelinks\":[],\"customfield_10004\":\"604\",\"watches\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-55/watchers\",\"watchCount\":1,\"isWatching\":true},\"customfield_10000\":null,\"subtasks\":[],\"status\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/status/1\",\"description\":\"The issue is open and ready for the assignee to start work on it.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/status_open.gif\",\"name\":\"Open\",\"id\":\"1\"},\"customfield_10006\":null,\"labels\":[],\"customfield_10005\":null,\"workratio\":-1,\"assignee\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362617\",\"name\":\"s362617\",\"emailAddress\":\"dd32438@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&ownerId=s362617&avatarId=10203\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?ownerId=s362617&avatarId=10203\"},\"displayName\":\"Dawid Drozd\",\"active\":true},\"aggregatetimeestimate\":null,\"project\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/project/BET\",\"id\":\"10018\",\"key\":\"BET\",\"name\":\"BetterJira\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?size=small&pid=10018&avatarId=10002\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?pid=10018&avatarId=10002\"}},\"versions\":[],\"environment\":null,\"timeestimate\":null,\"aggregateprogress\":{\"progress\":0,\"total\":0},\"lastViewed\":\"2013-04-27T11:51:57.722+0200\",\"components\":[{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/component/10005\",\"id\":\"10005\",\"name\":\"ui\"}],\"customfield_10010\":null,\"timeoriginalestimate\":null,\"aggregatetimespent\":null}},{\"expand\":\"editmeta,renderedFields,transitions,changelog,operations\",\"id\":\"10614\",\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10614\",\"key\":\"BET-54\",\"fields\":{\"summary\":\"Przekierowanie linków Jiry do aplikacji\",\"progress\":{\"progress\":0,\"total\":0},\"issuetype\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issuetype/3\",\"id\":\"3\",\"description\":\"A task that needs to be done.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/task.gif\",\"name\":\"Task\",\"subtask\":false},\"votes\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-54/votes\",\"votes\":0,\"hasVoted\":false},\"resolution\":null,\"fixVersions\":[],\"resolutiondate\":null,\"timespent\":null,\"reporter\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362631\",\"name\":\"s362631\",\"emailAddress\":\"dj18125@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10118\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10118\"},\"displayName\":\"Dawid Jewko\",\"active\":true},\"aggregatetimeoriginalestimate\":null,\"created\":\"2013-04-27T11:51:10.000+0200\",\"updated\":\"2013-04-27T11:51:10.000+0200\",\"description\":\"Powinna byc zaimplementowana mozliwość włączenia przechwytywania linków Jiry przez naszą aplikację i odpowiedznie ich obsłużenie.\",\"priority\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/priority/3\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/priority_major.gif\",\"name\":\"Major\",\"id\":\"3\"},\"duedate\":null,\"customfield_10001\":null,\"issuelinks\":[],\"customfield_10004\":\"603\",\"watches\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-54/watchers\",\"watchCount\":1,\"isWatching\":true},\"customfield_10000\":null,\"subtasks\":[],\"status\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/status/1\",\"description\":\"The issue is open and ready for the assignee to start work on it.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/status_open.gif\",\"name\":\"Open\",\"id\":\"1\"},\"customfield_10006\":null,\"labels\":[],\"customfield_10005\":null,\"workratio\":-1,\"assignee\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362617\",\"name\":\"s362617\",\"emailAddress\":\"dd32438@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&ownerId=s362617&avatarId=10203\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?ownerId=s362617&avatarId=10203\"},\"displayName\":\"Dawid Drozd\",\"active\":true},\"aggregatetimeestimate\":null,\"project\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/project/BET\",\"id\":\"10018\",\"key\":\"BET\",\"name\":\"BetterJira\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?size=small&pid=10018&avatarId=10002\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?pid=10018&avatarId=10002\"}},\"versions\":[],\"environment\":null,\"timeestimate\":null,\"aggregateprogress\":{\"progress\":0,\"total\":0},\"lastViewed\":\"2013-04-27T11:51:10.697+0200\",\"components\":[{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/component/10003\",\"id\":\"10003\",\"name\":\"lib\"}],\"customfield_10010\":null,\"timeoriginalestimate\":null,\"aggregatetimespent\":null}},{\"expand\":\"editmeta,renderedFields,transitions,changelog,operations\",\"id\":\"10613\",\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/10613\",\"key\":\"BET-53\",\"fields\":{\"summary\":\"Implementacja dodawania załączników z urządzenia\",\"progress\":{\"progress\":0,\"total\":0},\"issuetype\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issuetype/3\",\"id\":\"3\",\"description\":\"A task that needs to be done.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/task.gif\",\"name\":\"Task\",\"subtask\":false},\"votes\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-53/votes\",\"votes\":0,\"hasVoted\":false},\"resolution\":null,\"fixVersions\":[],\"resolutiondate\":null,\"timespent\":null,\"reporter\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362631\",\"name\":\"s362631\",\"emailAddress\":\"dj18125@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&avatarId=10118\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?avatarId=10118\"},\"displayName\":\"Dawid Jewko\",\"active\":true},\"aggregatetimeoriginalestimate\":null,\"created\":\"2013-04-27T11:49:11.000+0200\",\"updated\":\"2013-04-27T11:49:11.000+0200\",\"description\":null,\"priority\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/priority/3\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/priority_major.gif\",\"name\":\"Major\",\"id\":\"3\"},\"duedate\":null,\"customfield_10001\":null,\"issuelinks\":[],\"customfield_10004\":\"602\",\"watches\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/issue/BET-53/watchers\",\"watchCount\":1,\"isWatching\":true},\"customfield_10000\":null,\"subtasks\":[],\"status\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/status/1\",\"description\":\"The issue is open and ready for the assignee to start work on it.\",\"iconUrl\":\"https://jira.wmi.amu.edu.pl/images/icons/status_open.gif\",\"name\":\"Open\",\"id\":\"1\"},\"customfield_10006\":null,\"labels\":[],\"customfield_10005\":null,\"workratio\":-1,\"assignee\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/user?username=s362617\",\"name\":\"s362617\",\"emailAddress\":\"dd32438@st.amu.edu.pl\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?size=small&ownerId=s362617&avatarId=10203\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/useravatar?ownerId=s362617&avatarId=10203\"},\"displayName\":\"Dawid Drozd\",\"active\":true},\"aggregatetimeestimate\":null,\"project\":{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/project/BET\",\"id\":\"10018\",\"key\":\"BET\",\"name\":\"BetterJira\",\"avatarUrls\":{\"16x16\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?size=small&pid=10018&avatarId=10002\",\"48x48\":\"https://jira.wmi.amu.edu.pl/secure/projectavatar?pid=10018&avatarId=10002\"}},\"versions\":[],\"environment\":null,\"timeestimate\":null,\"aggregateprogress\":{\"progress\":0,\"total\":0},\"lastViewed\":\"2013-04-27T11:49:12.211+0200\",\"components\":[{\"self\":\"https://jira.wmi.amu.edu.pl/rest/api/2/component/10003\",\"id\":\"10003\",\"name\":\"lib\"}],\"customfield_10010\":null,\"timeoriginalestimate\":null,\"aggregatetimespent\":null}}]}"));
+		server.play();
 
-    }
-    
-    public void testNextResults() throws MalformedURLException, LoginException, BadResponse{
-    	if(true) return;
-    	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
+		ServerConnector.setServerURL(server.getUrl("/"));
 
-    	BasicAuthentication basic = new BasicAuthentication();
-    	Session session = basic.login(UserInfo.login, UserInfo.password);
-    	assertNotNull(session);
-    	
-    	
-    }
-    
-    public void testGetFunctionName() throws LoginException, BadResponse, MalformedURLException{
-	ServerConnector.setServerURL(new URL("https://jira.wmi.amu.edu.pl/"));
+		BasicAuthentication basic = new BasicAuthentication();
+		Session session = basic.login(UserInfo.login, UserInfo.password);
+		assertNotNull(session);
 
-	BasicAuthentication basic = new BasicAuthentication();
-	Session session = basic.login(UserInfo.login, UserInfo.password);
-	assertNotNull(session);
-	SearchForIssues issues = new SearchForIssues(session);
-	assertEquals("/rest/api/2/search", issues.getFunctionName());
-    }
+		String JQL = new String("status=\"open\"");
+		SearchForIssues issues = new SearchForIssues(session);
+		assertNotNull(issues);
+		IssueList issueList1 = (IssueList) issues.search(JQL, 0, 5);
+		assertNotNull(issueList1);
+		assertEquals(JQL, issueList1.getRequest().get("jql"));
+		assertEquals(0, issueList1.getRequest().get("startAt"));
+		assertEquals(5, issueList1.getRequest().get("maxResults"));
+		assertEquals(0, issueList1.getStartAt());
+		assertEquals(5, issueList1.getMaxResults());
+		assertEquals(17, issueList1.getTotal());
+		assertEquals(10731, issueList1.getIssue(0).getId());
+		server.shutdown();
+
+	}
+
+	public void testNextResults() throws LoginException, BadResponse, IOException {
+		if (true)
+			return;
+		MockWebServer server = new MockWebServer();
+		server.enqueue(new MockResponse()
+				.setBody("{\"session\":{\"value\":\"4192C9DD35545EFFDAA9EAE196AFAC41\",\"name\":\"JSESSIONID\"},\"loginInfo\":{\"previousLoginTime\":\"2013-06-07T10:13:55.759+0200\",\"loginCount\":184}}"));
+		server.play();
+		ServerConnector.setServerURL(server.getUrl("/"));
+
+		BasicAuthentication basic = new BasicAuthentication();
+		Session session = basic.login(UserInfo.login, UserInfo.password);
+		assertNotNull(session);
+		server.shutdown();
+
+	}
+
+	public void testGetFunctionName() throws LoginException, BadResponse,
+			IOException {
+		MockWebServer server = new MockWebServer();
+		server.enqueue(new MockResponse()
+				.setBody("{\"session\":{\"value\":\"4192C9DD35545EFFDAA9EAE196AFAC41\",\"name\":\"JSESSIONID\"},\"loginInfo\":{\"previousLoginTime\":\"2013-06-07T10:13:55.759+0200\",\"loginCount\":184}}"));
+		server.play();
+		ServerConnector.setServerURL(server.getUrl("/"));
+
+		BasicAuthentication basic = new BasicAuthentication();
+		Session session = basic.login(UserInfo.login, UserInfo.password);
+		assertNotNull(session);
+		SearchForIssues issues = new SearchForIssues(session);
+		assertEquals("/rest/api/2/search", issues.getFunctionName());
+		server.shutdown();
+	}
 }
