@@ -4,6 +4,7 @@ public class User {
     private String name;
     private String emailAddress;
     private String displayName;
+    private Image avatarUrls;
 
     public final String getName() {
 	return name;
@@ -27,6 +28,14 @@ public class User {
 
     public final void setDisplayName(String displayName) {
 	this.displayName = displayName;
+    }
+
+    public Image getAvatarUrls() {
+	return avatarUrls;
+    }
+
+    public void setAvatarUrls(Image avatarUrls) {
+	this.avatarUrls = avatarUrls;
     }
 
 }

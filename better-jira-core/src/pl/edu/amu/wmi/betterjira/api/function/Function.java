@@ -122,7 +122,13 @@ public abstract class Function implements FunctionInterface {
 
 	int statusCode = getStatusCode(httpResponse);
 
-	Object parseResponse = parseResponse(httpResponse);
+	Object parseResponse;
+	try {
+	    parseResponse = parseResponse(httpResponse);
+	} catch (JSONException e) {
+	    e.printStackTrace();
+	    throw new IllegalStateException(Integer.toString(statusCode));
+	}
 
 	if (statusCode != correctStatusCode) {
 	    throw new StatusCode(statusCode,

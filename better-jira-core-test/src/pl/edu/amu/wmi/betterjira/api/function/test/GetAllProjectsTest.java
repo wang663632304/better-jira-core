@@ -7,10 +7,10 @@ import com.google.mockwebserver.MockWebServer;
 
 import pl.edu.amu.wmi.betterjira.api.ServerConnector;
 import pl.edu.amu.wmi.betterjira.api.function.BasicAuthentication;
-import pl.edu.amu.wmi.betterjira.api.function.GetAllProjects;
 import pl.edu.amu.wmi.betterjira.api.function.data.Project;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
 import pl.edu.amu.wmi.betterjira.api.function.data.test.TestActivity;
+import pl.edu.amu.wmi.betterjira.api.function.project.GetAllProjects;
 import pl.edu.amu.wmi.betterjira.utils.UserInfo;
 import android.test.ActivityInstrumentationTestCase2;
 

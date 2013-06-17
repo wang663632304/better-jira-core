@@ -1,4 +1,4 @@
-package pl.edu.amu.wmi.betterjira.api.function;
+package pl.edu.amu.wmi.betterjira.api.function.filters;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.GetMethod;
+import pl.edu.amu.wmi.betterjira.api.function.Function;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.Filter;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;

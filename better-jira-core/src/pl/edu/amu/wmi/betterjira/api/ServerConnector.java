@@ -1,6 +1,7 @@
 package pl.edu.amu.wmi.betterjira.api;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -16,6 +17,8 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
@@ -76,6 +79,30 @@ public class ServerConnector {
 		    stringBuilderCookie.toString());
 	}
 	return httpClient.execute(method.getRequest());
+    }
+
+    public static InputStream getImageFromServer(String url, Session session)
+	    throws IllegalStateException, IOException, URISyntaxException {
+
+	GetMethod getMethod = new GetMethod("");
+
+	HttpClient httpClient = getNewHttpClient(getMethod.getHttpParams());
+
+	getMethod.setURL(new URL(url));
+
+	// Adding session key
+	if (session != null) {
+	    StringBuilder stringBuilderCookie = new StringBuilder(
+		    session.getName());
+	    stringBuilderCookie.append("=");
+	    stringBuilderCookie.append(session.getValue());
+	    getMethod.getRequest().addHeader("Cookie",
+		    stringBuilderCookie.toString());
+	}
+
+	HttpResponse httpResponse = httpClient.execute(getMethod.getRequest());
+
+	return httpResponse.getEntity().getContent();
     }
 
     private static HttpClient getNewHttpClient(HttpParams httpParams) {

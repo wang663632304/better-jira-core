@@ -108,30 +108,47 @@ public class DataParser {
 	    double fieldDouble = jsonObject.getDouble(field.getName());
 	    field.setDouble(object, fieldDouble);
 
-	} else if (fieldType.equals("class java.lang.String")) {
-	    String fieldString = jsonObject.getString(field.getName());
-	    field.set(object, fieldString);
-
 	} else if (fieldType.equals("long")) {
 	    long fieldLong = jsonObject.getLong(field.getName());
 	    field.setLong(object, fieldLong);
 
-	} else if (fieldType.equals("class java.util.ArrayList")) {
+	} else if (fieldType.contains(String.class.getName())) {
+	    String fieldString = jsonObject.getString(field.getName());
+	    field.set(object, fieldString);
+
+	} else if (fieldType.contains(ArrayList.class.getName())) {
 	    parseArrayElement(object, jsonObject, field);
 
-	} else if (fieldType.equals("class java.util.Date")) {
+	} else if (fieldType.contains(Date.class.getName())) {
 	    String date = jsonObject.getString(field.getName());
 	    field.set(object, parseJiraDate(date));
 
-	} else if (fieldType
-		.equals("class pl.edu.amu.wmi.betterjira.api.function.data.JQL")) {
+	} else if (fieldType.contains(JQL.class.getName())) {
 	    field.set(object, new JQL(jsonObject.getString(field.getName())));
 
+	} else if (fieldType.contains(Image.class.getName())) {
+	    Image image = new Image();
+
+	    // i must parse in this way because i can't name fields like this
+	    jsonObject = jsonObject.getJSONObject(field.getName());
+	    if (jsonObject.has("48x48")) {
+		image.setUrl48x48(jsonObject.getString("48x48"));
+	    }
+	    if (jsonObject.has("32x32")) {
+		image.setUrl32x32(jsonObject.getString("32x32"));
+	    }
+	    if (jsonObject.has("24x24")) {
+		image.setUrl24x24(jsonObject.getString("24x24"));
+	    }
+	    if (jsonObject.has("16x16")) {
+		image.setUrl16x16(jsonObject.getString("16x16"));
+	    }
+	    field.set(object, image);
 	} else {
 	    Class<?> type = field.getType();
 	    Object subObject = type.newInstance();
 	    parse(subObject, jsonObject.getJSONObject(field.getName()));
-	
+
 	    field.set(object, subObject);
 	}
 	field.setAccessible(accessible);

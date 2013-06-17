@@ -1,7 +1,6 @@
-package pl.edu.amu.wmi.betterjira.api.function;
+package pl.edu.amu.wmi.betterjira.api.function.project;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.http.client.ClientProtocolException;
@@ -10,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import pl.edu.amu.wmi.betterjira.api.GetMethod;
+import pl.edu.amu.wmi.betterjira.api.function.Function;
 import pl.edu.amu.wmi.betterjira.api.function.data.DataParser;
 import pl.edu.amu.wmi.betterjira.api.function.data.Project;
 import pl.edu.amu.wmi.betterjira.api.function.data.Session;
@@ -29,7 +29,9 @@ public class GetAllProjects extends Function {
 	return "/rest/api/2/project";
     }
 
-    public ArrayList<Project> getAllVisibleProjects() throws BadResponse {
+    public ArrayList<Project> getAllVisibleProjects() throws BadResponse,
+	    ClientProtocolException, IllegalStateException, IOException,
+	    NoStatusLine, EmptyResponse, JSONException {
 	GetMethod getMethod = new GetMethod(getFunctionName());
 	try {
 	    JSONArray response = (JSONArray) response(getMethod);
@@ -47,20 +49,6 @@ public class GetAllProjects extends Function {
 	    }
 	    return projects;
 
-	} catch (UnsupportedEncodingException e1) {
-	    e1.printStackTrace();
-	} catch (JSONException e) {
-	    e.printStackTrace();
-	} catch (ClientProtocolException e) {
-	    e.printStackTrace();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	} catch (IllegalStateException e) {
-	    e.printStackTrace();
-	} catch (EmptyResponse e) {
-	    e.printStackTrace();
-	} catch (NoStatusLine e) {
-	    e.printStackTrace();
 	} catch (StatusCode e) {
 	    e.printStackTrace();
 	    switch (e.getStatusCode()) {
@@ -71,6 +59,5 @@ public class GetAllProjects extends Function {
 			+ e.getStatusCode());
 	    }
 	}
-	return null;
     }
 }
